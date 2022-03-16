@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  web:
+    container_name: webD
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - "./app:/usr/share/nginx"
+      - ./config:/etc/nginx/conf.d
+
+  mysql:
+    container_name: db
+    image: mysql:8
+    volumes:
+      - "./mysql/data:/var/lib/mysql"
+      - "./mysql/config:/etc/mysql/conf.d"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    command: --default-authentication-plugin=mysql_native_password
+
+  php:
+    container_name: phpD
+    build:
+      dockerfile: images/php/Dockerfile
+      context: ./
+    volumes:
+      - "./app:/usr/share/nginx"
+      - "./php/sessions:/var/sessions"
